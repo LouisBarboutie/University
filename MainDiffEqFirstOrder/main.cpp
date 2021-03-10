@@ -28,27 +28,25 @@ int main(void)
   double fExact (double, double, double);
   double deltaEuler (double, double);
   double deltaHeun (double, double);
-  double yNextTemp (double, double, double);
   double yNext (double, double, double, double);
 
   // number of points
-  int n = 100;			
+  int n = 10;			
 
   // step of x
   double h = 0.1;
   
   // initial conditions
-  double x0=0, y0=0;
+  double x0=0, y0=0, yBarre;
   
   // vector definition
-  vector<double> x, yHeun, yExact, yEuler, yBarre, yHeunDelta, yEulerDelta;
+  vector<double> x, yHeun, yExact, yEuler, yHeunDelta, yEulerDelta;
   
   // vector initialisation
   x.push_back (x0);
   yHeun.push_back (y0);
   yExact.push_back (0);
   yEuler.push_back (0);
-  yBarre.push_back (0);
   yHeunDelta.push_back (0);
   yEulerDelta.push_back (0);
   
@@ -69,15 +67,15 @@ int main(void)
       yEuler.push_back (yEuler[i - 1] + h * f (x[i - 1], yEuler[i - 1])); 
       
       // rock'n roll euler
-      yBarre.push_back (yNextTemp (x[i - 1], yHeun[i - 1], h));
-      yHeun.push_back (yNext (yBarre[i], x[i - 1], yHeun[i - 1], h));
+      yBarre = yHeun[i-1]+h*f(x[i - 1], yHeun[i - 1]);
+      yHeun.push_back (yHeun[i-1]+h*0.5*(f(x[i - 1], yHeun[i - 1]) + f( x[i], yBarre)));
       
       // relative difference
       yHeunDelta.push_back (deltaHeun (yHeun[i], yExact[i]));
       yEulerDelta.push_back (deltaEuler (yEuler[i], yExact[i]));
       
       // debug
-      cout << fixed << setprecision(8) << "\t" << "yBarre=" << yBarre[i] << "\t" <<  "yExact = " << yExact[i] << "\t" << "yEuler = " << yEuler[i] << "\t" << "yHeun = " << yHeun[i] << "\t" << "yHeunDelta = " << yHeunDelta[i] << "\t" << "yEulerDelta = " << yEulerDelta[i] << "\n";
+      cout << fixed << setprecision(8) << "\t" <<  "yExact = " << yExact[i] << "\t" << "yEuler = " << yEuler[i] << "\t" << "yHeun = " << yHeun[i] << "\t" << "yHeunDelta = " << yHeunDelta[i] << "\t" << "yEulerDelta = " << yEulerDelta[i] << "\n";
     }
 }
 
