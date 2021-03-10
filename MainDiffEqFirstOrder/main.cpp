@@ -12,10 +12,12 @@
  * renamed "y" to "yEuler", "y_exact" to "yExact", "f_exact" to "fExact", "y_suiv" to "yNext", "y_barre" to "yNextTemp", "ecart_rel_Euler" to "deltaEuler", "ecart_rel_Heun" to "deltaHeun", "ecart" to "yEulerDelta", "ySuiv_ecart" to "yHeunDelta"
  */
 
+#include <stdlib.h>
 #include <iostream>
 using namespace std;
 #include <vector>
 #include <math.h>
+#include <iomanip>
 
 int main(void)
 {
@@ -30,7 +32,7 @@ int main(void)
   double yNext (double, double, double, double);
 
   // number of points
-  int n = 10;			
+  int n = 100;			
 
   // step of x
   double h = 0.1;
@@ -42,8 +44,8 @@ int main(void)
   vector<double> x, yHeun, yExact, yEuler, yBarre, yHeunDelta, yEulerDelta;
   
   // vector initialisation
-  x.push_back (0);
-  yHeun.push_back (0);
+  x.push_back (x0);
+  yHeun.push_back (y0);
   yExact.push_back (0);
   yEuler.push_back (0);
   yBarre.push_back (0);
@@ -54,7 +56,7 @@ int main(void)
 
   // ===== calculations =====
   
-  // main oop
+  // main loop
   for (int i = 1; i <= n; i++)
     {
       // x values
@@ -75,9 +77,11 @@ int main(void)
       yEulerDelta.push_back (deltaEuler (yEuler[i], yExact[i]));
       
       // debug
-      cout << "yEuler = " << yEuler[i] << "\t" << "yBarre=" << yBarre[i] << "\t" <<  "yExact = " << yExact[i] << "\t" << "yEuler = " << yEuler[i] << "\t" << "yHeun = " << yHeun[i] << "\t" << "yHeunDelta = " << yHeunDelta[i] << "\t" << "yEulerDelta = " << yEulerDelta[i] << "\n";
+      cout << fixed << setprecision(8) << "\t" << "yBarre=" << yBarre[i] << "\t" <<  "yExact = " << yExact[i] << "\t" << "yEuler = " << yEuler[i] << "\t" << "yHeun = " << yHeun[i] << "\t" << "yHeunDelta = " << yHeunDelta[i] << "\t" << "yEulerDelta = " << yEulerDelta[i] << "\n";
     }
 }
+
+
 
 // ===== functions =====
 
