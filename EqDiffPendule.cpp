@@ -25,7 +25,7 @@ int main()
     double pi = acos(-1);
     
     // initial conditions
-    double theta0 = pi/4, omega0 = 0, angularFreq = 25; // theta is angle, omega is angular velocity, angularFreq is w
+    double theta0 = pi/4, omega0 = 0, angularFreq = 1; // theta is angle, omega is angular velocity, angularFreq is w
 
     // intermediate variables
     double k1, k2, k3, k4, l1, l2, l3, l4;
@@ -54,23 +54,23 @@ int main()
         k2 = f(elapsedTime[i-1]+0.5*h, theta[i-1]+0.5*h*k1, angularFreq);
         k3 = f(elapsedTime[i-1]+0.5*h, theta[i-1]+0.5*h*k2, angularFreq);
         k4 = f(elapsedTime[i-1]+h, theta[i-1]+h*k3, angularFreq);
-        zeta.push_back (theta[i-1]+(h/6)*(k1+2*k2+2*k3+k4));
+        omega.push_back (theta[i-1]+(h/6)*(k1+2*k2+2*k3+k4));
         
         l1 = g(elapsedTime[i-1], omega[i-1]);
-        l2 = g(elapsedTime[i-1]+0.5*h, omega[i-1]+0.5*h*k1);
-        l3 = g(elapsedTime[i-1]+0.5*h, omega[i-1]+0.5*h*k2);
-        l4 = g(elapsedTime[i-1]+h, omega[i-1]+h*k3);
-        omega.push_back (omega[i-1]+(h/6)*(k1+2*k2+2*k3+k4));
+        l2 = g(elapsedTime[i-1]+0.5*h, omega[i-1]+0.5*h*l1);
+        l3 = g(elapsedTime[i-1]+0.5*h, omega[i-1]+0.5*h*l2);
+        l4 = g(elapsedTime[i-1]+h, omega[i-1]+h*l3);
+        theta.push_back (omega[i-1]+(h/6)*(l1+2*l2+2*l3+l4));
 
         //debug
-        cout << fixed << setprecision(9) << "timestamp = " << elapsedTime[i] << "\t" << "zeta = u = " << zeta[i] << "\t" << "omega = theta =" << omega[i] << "\n";
+        cout << fixed << setprecision(9) << "timestamp = " << elapsedTime[i] << "\t" << "omega = " << omega[i] << "\t" << "theta =" << theta[i] << "\n";
     }
 }
 
 // ===== functions =====
 
 #include <math.h>
-double f( double theta, double omega, double w)
+double f( double omega, double theta, double w)
 {
     double resf;
     resf = -pow( w, 2) * sin( theta);
