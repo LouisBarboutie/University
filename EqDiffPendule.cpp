@@ -31,13 +31,12 @@ int main()
     double k1, k2, k3, k4, l1, l2, l3, l4;
 
     // vectors
-    vector<double> elapsedTime, theta, omega, zeta;
+    vector<double> elapsedTime, theta, omega;
 
     // vector initialisation
     elapsedTime.push_back ( 0);
     theta.push_back ( theta0);
     omega.push_back ( omega0);
-    zeta.push_back (g( theta0, omega0));
 
     // ===== calculations =====
     // rk4 BTW
@@ -54,13 +53,15 @@ int main()
         k2 = f(elapsedTime[i-1]+0.5*h, theta[i-1]+0.5*h*k1, angularFreq);
         k3 = f(elapsedTime[i-1]+0.5*h, theta[i-1]+0.5*h*k2, angularFreq);
         k4 = f(elapsedTime[i-1]+h, theta[i-1]+h*k3, angularFreq);
-        omega.push_back (theta[i-1]+(h/6)*(k1+2*k2+2*k3+k4));
+        
         
         l1 = g(elapsedTime[i-1], omega[i-1]);
         l2 = g(elapsedTime[i-1]+0.5*h, omega[i-1]+0.5*h*l1);
         l3 = g(elapsedTime[i-1]+0.5*h, omega[i-1]+0.5*h*l2);
         l4 = g(elapsedTime[i-1]+h, omega[i-1]+h*l3);
-        theta.push_back (omega[i-1]+(h/6)*(l1+2*l2+2*l3+l4));
+        
+        omega.push_back (omega[i-1]+(h/6)*(k1+2*k2+2*k3+k4));
+        theta.push_back (theta[i-1]+(h/6)*(l1+2*l2+2*l3+l4));
 
         //debug
         cout << fixed << setprecision(9) << "timestamp = " << elapsedTime[i] << "\t" << "omega = " << omega[i] << "\t" << "theta =" << theta[i] << "\n";
@@ -70,7 +71,7 @@ int main()
 // ===== functions =====
 
 #include <math.h>
-double f( double omega, double theta, double w)
+double f( double elapsedTime, double theta, double w)
 {
     double resf;
     resf = -pow( w, 2) * sin( theta);
@@ -78,7 +79,7 @@ double f( double omega, double theta, double w)
 }
 
 #include <math.h>
-double g( double theta, double omega)
+double g( double elapsedTime, double omega)
 {
     double resg;
     resg = omega;
