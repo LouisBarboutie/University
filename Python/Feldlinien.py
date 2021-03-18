@@ -20,8 +20,8 @@ hellOo = np.arange(-sizeModifier, sizeModifier, .05)
 x, y = np.meshgrid(hellOo, hellOo)
 
 # getting Ex and Ey
-subOne = np.power(np.sqrt(np.power((x-a), 2) + np.power((y-a0), 2)))
-subTwo = np.power(np.sqrt(np.power((x+a), 2) + np.power((y-a0), 2)))
+subOne = np.power(np.sqrt(np.power((x-a), 2) + np.power((y-a0), 2)), 3)
+subTwo = np.power(np.sqrt(np.power((x+a), 2) + np.power((y-a0), 2)), 3)
 Ex = Q / (4*3.14*EPSILON) * (((x-a) / subOne) - ((x+a) / subTwo))
 Ey = Q / (4*3.14*EPSILON) * ((y / subOne) - (y / subTwo))
 
