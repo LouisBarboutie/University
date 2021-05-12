@@ -37,7 +37,7 @@ int main()
     elapsedTime.push_back ( 0);
     theta.push_back ( theta0);
     omega.push_back ( omega0);
-    // bruh
+
     // ===== calculations =====
     // rk4 BTW
 
