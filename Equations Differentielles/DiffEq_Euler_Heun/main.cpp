@@ -1,17 +1,3 @@
-/* MainDiffEqFirstOrder v0.0.1
- * language: C++
- * author: Louis-Hendrik Barboutie
- * date: 10/03/2021
- * license: CC BY-NC 4.0
- *
- * original code by Marie Hagenbourger, no license provided
- *
- * Changelog:
- * rearranged code for better readability and structure, uniformized variable names in functions
- * redundant variable "ySuiv" deleted, as it is just the value you push into "y" 
- * renamed "y" to "yEuler", "y_exact" to "yExact", "f_exact" to "fExact", "y_suiv" to "yNext", "y_barre" to "yNextTemp", "ecart_rel_Euler" to "deltaEuler", "ecart_rel_Heun" to "deltaHeun", "ecart" to "yEulerDelta", "ySuiv_ecart" to "yHeunDelta"
- */
-
 #include <stdlib.h>
 #include <iostream>
 using namespace std;
