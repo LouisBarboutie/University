@@ -37,7 +37,7 @@ int main(void)
   double h = 0.1;
   
   // initial conditions
-  double x0=0, y0=0, yBarre;
+  double x0=0, y0=1, yBarre;
   
   // vector definition
   vector<double> x, yHeun, yExact, yEuler, yHeunDelta, yEulerDelta;
@@ -45,10 +45,10 @@ int main(void)
   // vector initialisation
   x.push_back (x0);
   yHeun.push_back (y0);
-  yExact.push_back (0);
-  yEuler.push_back (0);
-  yHeunDelta.push_back (0);
-  yEulerDelta.push_back (0);
+  yExact.push_back (y0);
+  yEuler.push_back (y0);
+  yHeunDelta.push_back (y0);
+  yEulerDelta.push_back (y0);
   
   
 
@@ -143,3 +143,4 @@ int main(void)
  * return (resultat);
  * }
  */
+
