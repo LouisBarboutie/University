@@ -1,6 +1,9 @@
 #include "Particule.h"
+#include "ParticuleChargee.h"
 #include <iostream>
 #include <stdlib.h>
+#include <vector>
+#include <math.h>
 using namespace std;
 
 Particule::Particule(float a, float b, float c)
@@ -10,18 +13,12 @@ Particule::Particule(float a, float b, float c)
     masse = c;
 }
 
-void Particule::deplace(float a, float b)
-{
-    x = x + a;
-    y = y + b;
-}
+//float Particule::getx(void)
+//{
+//    return x;
+//}
 
-float Particule::getx(void)
-{
-    return x;
-}
-
-float Particule::gety(void)
-{
-    return y;
-}
+//float Particule::gety(void)
+//{
+//    return y;
+//}
