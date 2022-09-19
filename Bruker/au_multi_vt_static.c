@@ -2,6 +2,7 @@
   Description:
   This AU program allows the aquisition of multiple spectra with varying temperature for a static sample, and improves it with a spinning sequence.
   Experiments are created as necessary, but a list containing the temperatures one wants to run the experiment at needs to be written beforehand.
+  The sample is given some time (user decided) to equilibrate its temperature before spinning. The spinning is used to obtain a good tensor-shaped peak.
   --------------------------------------------------------------------------------------------------------
   Author: Louis-Hendrik Barboutie
   Email: louis.barboutie@gmail.com
@@ -56,8 +57,8 @@ int au_multi_vt_static(const char* curdat){
   GETINT("enter equilibration duration (sec):", t_equi)
 
   STOREPAR("MASR", v_spin) // the spinning sequence uses the same speed each time
-  STOREPAR("L 31", v_spin)
-  MASR
+  STOREPAR("L 31", v_spin) // both parameters need to be set
+  MASR // pass the masr parameter to the spinning unit
 
   i = 0;
   TIMES(experiments_counter)
