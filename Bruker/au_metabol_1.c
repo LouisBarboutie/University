@@ -27,7 +27,7 @@ int au_metabol_1(void){
     int i, j, n_exp;
     // char exp_nbr_str[64][4];
     char exp_name_list[64][4];
-    char file_names[7][20]; // list of the names of files to copy
+    char file_names[6][20]; // list of the names of files to copy
     char new_dir_path_default[PATH_MAX]; // path to the default directory containing all datasets
     char ref_dataset_name[PATH_MAX]; // name of the reference dataset
     char ref_dataset_path[PATH_MAX]; // path to the reference dataset
@@ -54,12 +54,12 @@ int au_metabol_1(void){
     // define the list of file names
     strcpy(file_names[0], "acqu");
     strcpy(file_names[1], "acqus");
-    strcpy(file_names[2], "audita.txt");
+    // strcpy(file_names[2], "audita.txt");
     // strcpy(file_names[3], "auditp.txt");
-    strcpy(file_names[3], "outd");
-    strcpy(file_names[4], "proc");
-    strcpy(file_names[5], "procs");
-    strcpy(file_names[6], "title");
+    strcpy(file_names[2], "outd");
+    strcpy(file_names[3], "proc");
+    strcpy(file_names[4], "procs");
+    strcpy(file_names[5], "title");
     	
     // define default directory path
     strcpy(new_dir_path_default, "/opt/topspin3.6.3.b.11/data/jesus/nmr/");
@@ -131,7 +131,7 @@ int au_metabol_1(void){
         }
 
         // create and copy the reference files for the first level
-        for (i = 0; i < 3; i++){
+        for (i = 0; i < 2; i++){
             strcpy(new_file_path, new_dataset_exp_path);
             strcat(new_file_path, "/");
             strcat(new_file_path, file_names[i]);
@@ -174,7 +174,7 @@ int au_metabol_1(void){
         }
 
         // copy files loop
-        for (i = 3; i < 7; i++){
+        for (i = 2; i < 6; i++){
             // get the path for the files to copy
             strcpy(new_file_path, new_dataset_exp_path);
             strcat(new_file_path, "/");
