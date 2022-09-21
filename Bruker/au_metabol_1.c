@@ -6,11 +6,12 @@
     It copies all the parameter files but no raw or processed data.
     Experiments numbering does not have to be continuous.
     Processing number is assumed to be 1 for every experiment.
-    Date is set automatically as first line in the title.
+    Title file is written automatically with given parameters.
 
     Author: Louis-Hendrik Barboutie
 
     Changelog:
+    - 21/09/2022    added title file creation
     - 20/09/2022	implemented directory reading, automatic date setting
     - 19/09/2022    created
 */
@@ -22,9 +23,11 @@ QUITMSG("--- AU program au_metabol_1 finished ---")
 #include <sys/stat.h>
 #include <dirent.h>
 #include <time.h>
+#include <stdlib.h>
+#include <math.h>
 
 int au_metabol_1(void){
-    int i, j, n_exp;
+    int i, j, n_exp, spinner_nbr;
     // char exp_nbr_str[64][4];
     char exp_name_list[64][4];
     char file_names[6][20]; // list of the names of files to copy
@@ -40,6 +43,9 @@ int au_metabol_1(void){
     char new_file_path[PATH_MAX]; // path to the new file
     char temp_ch; // one character as copy buffer
     char exp_date[PATH_MAX];
+    char exp_date_title[PATH_MAX];
+    char metabolite_name[PATH_MAX];
+    char metabolite_concentration[PATH_MAX];
     FILE *fptr_ref; // pointer to open the reference files
     FILE *fptr_dest; // pointer to open the destination files 
     DIR *ref_dataset_folder; // pointer to the reference dataset folder
@@ -47,15 +53,14 @@ int au_metabol_1(void){
     time_t T = time(NULL);
     struct tm dt = *localtime(&T);
 
-    // print date in title file
+    // get the current date for printing in title file and dataset name
     getdate(&dt);
     sprintf(exp_date, "%02d/%02d/%04d", dt.tm_mday, dt.tm_mon + 1, dt.tm_year + 1900);
+    sprintf(exp_date_title, "%02d%02d%04d", dt.tm_mday, dt.tm_mon + 1, dt.tm_year + 1900);
 
-    // define the list of file names
+    // define the list of file names to copy
     strcpy(file_names[0], "acqu");
     strcpy(file_names[1], "acqus");
-    // strcpy(file_names[2], "audita.txt");
-    // strcpy(file_names[3], "auditp.txt");
     strcpy(file_names[2], "outd");
     strcpy(file_names[3], "proc");
     strcpy(file_names[4], "procs");
@@ -64,12 +69,23 @@ int au_metabol_1(void){
     // define default directory path
     strcpy(new_dir_path_default, "/opt/topspin3.6.3.b.11/data/jesus/nmr/");
 
-    // ask user for name of new dataset
-    strcpy(new_dataset_name, "new_directory_name");
-    GETSTRING("enter name of new experiment:", new_dataset_name)
+    // ask user for name parameters of new dataset
+    strcpy(metabolite_name, "metabolite_name");
+    GETSTRING("enter name of metabolite:", metabolite_name)
+    strcpy(metabolite_concentration, "metabolite_concentration");
+    GETSTRING("enter concentration of metabolite in mM:", metabolite_concentration)
+    GETINT("enter spinner number:", spinner_nbr)
     
+    // construct dataset name
+    strcpy(new_dataset_name, "MDB_");
+    strcat(new_dataset_name, metabolite_name);
+    strcat(new_dataset_name, "_");
+    strcat(new_dataset_name, metabolite_concentration);
+    strcat(new_dataset_name, "mM_");
+    strcat(new_dataset_name, exp_date_title);
+
     // ask for a reference dataset to copy
-    strcpy(ref_dataset_name, "reference_directory_to_copy");
+    strcpy(ref_dataset_name, "MDB_REFERENCE_XXXmM_21092022");
     GETSTRING("enter name of experiment to copy (must be for same user):", ref_dataset_name)
 
     // store the path to the reference dataset
@@ -132,6 +148,7 @@ int au_metabol_1(void){
 
         // create and copy the reference files for the first level
         for (i = 0; i < 2; i++){
+            // get the reference and new file paths
             strcpy(new_file_path, new_dataset_exp_path);
             strcat(new_file_path, "/");
             strcat(new_file_path, file_names[i]);
@@ -139,6 +156,7 @@ int au_metabol_1(void){
             strcat(ref_file_path, "/");
             strcat(ref_file_path, file_names[i]);
             
+            // open files
             fptr_ref = fopen(ref_file_path, "r");
             fptr_dest = fopen(new_file_path, "w");
 
@@ -153,6 +171,7 @@ int au_metabol_1(void){
                 temp_ch = fgetc(fptr_ref);
             }
 
+            // close files
             fclose(fptr_ref);
             fclose(fptr_dest);
         }
@@ -193,17 +212,36 @@ int au_metabol_1(void){
                 return EXIT_FAILURE;
             }
             
-						// print the date in the title file
-            if (i == 6){
+            // print the title file
+            if (i == 5){
                 fprintf(fptr_dest, "%s\n", exp_date);
-            }
-            // copy character by character until End Of File
-            temp_ch = fgetc(fptr_ref);
-            while (temp_ch != EOF){
-                fputc(temp_ch, fptr_dest);
-                temp_ch = fgetc(fptr_ref);
+                if ( strcmp(exp_name_list[j], "10") == 0){
+                    fprintf(fptr_dest, "%s", "d1 = 1 ms\n");
+                }
+                if ( strcmp(exp_name_list[j], "11") == 0){
+                    fprintf(fptr_dest, "%s", "d1 = 10 s\n");
+                }
+                if ( strcmp(exp_name_list[j], "12") == 0){
+                    fprintf(fptr_dest, "%s", "d1 = 20 s\n");
+                }
+                if ( strcmp(exp_name_list[j], "13") == 0){
+                    fprintf(fptr_dest, "%s", "d1 = 40 s\n");
+                }
+                if ( strcmp(exp_name_list[j], "100") == 0){
+                    fprintf(fptr_dest, "%s", "parameters set for shimming\n");
+                }
+                fprintf(fptr_dest,"%s %s mM\nD2O, TSP 5 mM\ninsert HR-MAS 25 uL\nspinner number %i\n277 K\nP1 4.50 us\nPLW 1 14.65 W\n", metabolite_name, metabolite_concentration, spinner_nbr);
             }
 
+            // copy character by character until End Of File
+            else{
+            	temp_ch = fgetc(fptr_ref);
+            	while (temp_ch != EOF){
+                	fputc(temp_ch, fptr_dest);
+              	  temp_ch = fgetc(fptr_ref);
+            	}
+            }
+        
             // close reference and destination files
             fclose(fptr_ref);
             fclose(fptr_dest);
