@@ -29,7 +29,7 @@ QUITMSG("--- AU program au_metabol_1 finished ---")
 
 void assemble_path(char *path, char *prefix, char *suffix);
 void file_copy(char *ref_file_path, char *new_file_path);
-void create_title(char *ref_file_path, char *new_file_path, char *exp_date, char *metabolite_name, char *metabolite_concentration, char *metabolite_volume, int spinner_nbr, int exp);
+void create_title(char *ref_file_path, char *new_file_path, char *exp_date, char *metabolite_name, char *metabolite_concentration, char *metabolite_volume, char *solvent, int spinner_nbr, int exp);
 
 int au_metabol_1(void){
     int i, j, n_exp, spinner_nbr, d1;
@@ -52,6 +52,7 @@ int au_metabol_1(void){
     char metabolite_name[PATH_MAX];
     char metabolite_concentration[PATH_MAX];
     char metabolite_volume[PATH_MAX];
+    char solvent[PATH_MAX];
     char *ptr;
     FILE *fptr_ref; // pointer to open the reference files
     FILE *fptr_dest; // pointer to open the destination files 
@@ -75,6 +76,8 @@ int au_metabol_1(void){
     GETSTRING("enter concentration of metabolite in mM:", metabolite_concentration)
     strcpy(metabolite_volume, "metabolite_volume");
     GETSTRING("enter metabolite volume (uL)", metabolite_volume)
+    strcpy(solvent, "solvent");
+    GETSTRING("enter solvent name:", solvent)
     GETINT("enter spinner number:", spinner_nbr)
     
     // construct dataset name
@@ -84,6 +87,8 @@ int au_metabol_1(void){
     strcat(new_dataset_name, metabolite_concentration);
     strcat(new_dataset_name, "mM_");
     strcat(new_dataset_name,metabolite_volume),
+    strcat(new_dataset_name, "uL_");
+    strcat(new_dataset_name, solvent);
     strcat(new_dataset_name, "_");
     strcat(new_dataset_name, exp_date_title);
 
@@ -212,7 +217,7 @@ void file_copy(char *ref_file_path, char *new_file_path){
     return;
 }
 
-void create_title(char *ref_file_path, char *new_file_path, char *exp_date, char *metabolite_name, char *metabolite_concentration, char *metabolite_volume, int spinner_nbr, int exp){
+void create_title(char *ref_file_path, char *new_file_path, char *exp_date, char *metabolite_name, char *metabolite_concentration, char *metabolite_volume, char *solvent, int spinner_nbr, int exp){
     FILE *fptr_ref, *fptr_dest;
     int d1 = 0;
     
@@ -235,7 +240,7 @@ void create_title(char *ref_file_path, char *new_file_path, char *exp_date, char
     if (exp == 100){
         fprintf(fptr_dest, "parameters set for shimming\n");
     }
-    fprintf(fptr_dest,"%s %s mM\nVolume %s uL\nD2O, TSP 5 mM\ninsert HR-MAS 25 uL\nspinner number %i\n277 K\nP1 4.50 us\nPLW 1 14.65 W\n", metabolite_name, metabolite_concentration, metabolite_volume, spinner_nbr);
+    fprintf(fptr_dest,"%s %s mM\nVolume %s uL\n%s, TSP 5 mM\ninsert HR-MAS\nspinner number %i\n277 K\nP1 4.50 us\nPLW 1 14.65 W\n", metabolite_name, metabolite_concentration, metabolite_volume, solvent, spinner_nbr);
             
 
     // close files
