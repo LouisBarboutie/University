@@ -1,0 +1,54 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\setlength\parindent{0pt}
+
+\newtheorem{theorem}{Theorem}
+
+\newtheorem{proposition}[theorem]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem*{remark}{Remark}
+
+\title{LogMathsHW2}
+\author{Louis-Hendrik Barboutie}
+\date{April 2022}
+
+\begin{document}
+
+\maketitle
+
+\begin{proposition}[Fundamental Theorem of Algebra]
+    Let p(x) be a non-constant polynomial with coefficients in $\mathbb{C}$. Then there is $z \in \mathbb{C}$ such that $p(z) = 0$.
+\end{proposition}
+
+\begin{remark}
+    Proposition 1 is not true for polynomials with coefficients in $\mathbb{R}$. For example 
+    \begin{equation}
+        p(x) = x^2 + 1
+    \end{equation}
+    does not have real roots.
+\end{remark}
+
+\begin{theorem}
+    If X and Y are $\sigma$-finite measure spaces and $f: X \times Y \rightarrow \mathbb{R}$ is measurable and such that 
+    \begin{equation*}
+        \int_{X  \times Y}|f(x,y)|d(x,y) < \infty
+    \end{equation*}
+    then
+    \begin{equation}
+        \int_X \left( \int_Y f(x,y)dy \right)dx = \int_Y \left( \int_X f(x,y)dx \right)dy = \int_{X  \times Y}f(x,y)d(x,y).
+        \label{eq:someEq}
+    \end{equation}
+\end{theorem}
+
+\begin{remark}
+    In practice, equation~(\ref{eq:someEq}) means that we can switch the order of integration in a double integral.
+\end{remark}
+
+
+\end{document}

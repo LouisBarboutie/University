@@ -1,0 +1,41 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\usepackage{tikz-cd}
+
+\title{LogMathsHW4}
+\author{Louis-Hendrik Barboutie}
+\date{April 2022}
+
+\begin{document}
+
+\maketitle
+
+\begin{figure}[!ht]
+    \[
+    \begin{array}{c|cccccccc}
+        \cdot & e    & r    & r^2  & r^3  & a    & ar   & ar^2 & ar^3 \\ \hline
+        e     & e    & r    & r^2  & r^3  & a    & ar   & ar^2 & ar^3 \\
+        r     & r    & r^2  & r^3  & e    & ar^3 & a    & ar   & ar^2 \\
+        r^2   & r^2  & r^3  & e    & r    & ar^2 & ar^3 & a    & ar   \\
+        r^3   & r^3  & e    & r    & r^2  & ar   & ar^2 & ar^3 & a    \\
+        a     & a    & ar   & ar^2 & ar^3 & e    & r    & r^2  & r^3  \\
+        ar    & ar   & ar^2 & ar^3 & a    & r^3  & e    & r    & r^2  \\
+        ar^2  & ar^2 & ar^3 & a    & ar   & r^2  & r^3  & e    & r    \\
+        ar^3  & ar^3 & a    & ar   & ar^2 & r    & r^2  & r^3  & e    \\
+    \end{array}
+    \]
+    \caption{Cayley table for $D_4$}
+\end{figure}
+
+\begin{figure}[!ht]
+    \centering
+    \begin{tikzcd}
+        & a \arrow[dr] \arrow[dl,red,bend left = 15] & ar^3 \arrow[l] \arrow[dl,red,bend left = 15, crossing over] & \\
+        e \arrow[r] \arrow[ur,red,bend left = 15] & r  \arrow[ur,red,bend left = 15, crossing over] & ar \arrow[r] \arrow[dl,red,bend left = 15] & ar^2 \arrow[ul] \arrow[dl,red,bend left = 15] \\
+        & r^3 \arrow[ul] \arrow[ur,red,bend left = 15] & r^2 \arrow[ul, leftarrow, crossing over] \arrow[l] \arrow[ur,red,bend left = 15] & 
+    \end{tikzcd}    
+    \caption{Cayley graph of $D_4$}
+\end{figure}
+
+\end{document}
