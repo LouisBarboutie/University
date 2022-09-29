@@ -1,8 +1,5 @@
 /*
   Description:
-  This AU program allows the aquisition of multiple spectra with varying temperature for a static sample, and improves it with a spinning sequence.
-  Experiments are created as necessary, but a list containing the temperatures one wants to run the experiment at needs to be written beforehand.
-  The sample is given some time (user decided) to equilibrate its temperature before spinning. The spinning is used to obtain a good tensor-shaped peak.
   --------------------------------------------------------------------------------------------------------
   Author: Louis-Hendrik Barboutie
   Email: louis.barboutie@gmail.com
@@ -49,31 +46,31 @@ int au_multi_vt_static(const char* curdat){
 		
 	fclose( fptr_temperature_list );
 
-  v_spin = 3000;
-  t_spin = 0;
-  t_equi = 10;
-  GETINT("enter spin rate (Hz) before aquisition:", v_spin)
-  GETINT("enter spin duration (sec):", t_spin)
-  GETINT("enter equilibration duration (sec):", t_equi)
+    v_spin = 3000;
+    t_spin = 0;
+    t_equi = 10;
+    GETINT("enter spin rate (Hz) before aquisition:", v_spin)
+    GETINT("Enter spin duration (sec):", t_spin)
+    GETINT("enter equilibration duration (sec):", t_equi)
 
-  STOREPAR("MASR", v_spin) // the spinning sequence uses the same speed each time
-  STOREPAR("L 31", v_spin) // both parameters need to be set
-  MASR // pass the masr parameter to the spinning unit
+    STOREPAR("MASR", v_spin)
+    STOREPAR("L 31", v_spin)
+    MASR
 
-  i = 0;
-  TIMES(experiments_counter)
-      SETCURDATA 
-      STOREPAR("TE", temperature_list[i]) // store the next temperature setting from the list in the parameters
-      TESET // set the temperature
-      TEREADY(t_equi,0.1) // wait until the temperature has stabilized to 0.1 K and then wait t_equi
-      MASG(5) // try 5 times to launch the rotation
-      sleep(t_spin); // while spinning, wait for t_spin
-      MASH // stop the rotation
-      sleep(60); // wait 60 sec 
-      ZG_OVERWRITE // acquisition
-      IEXPNO // experiment incrementation
-      i++; 
-  END
+    i = 0;
+    TIMES(experiments_counter)
+        SETCURDATA
+        STOREPAR("TE", temperature_list[i])
+        TESET
+        TEREADY(t_equi,0.1)
+        MASG(5)
+        sleep(t_spin);
+        MASH
+        sleep(60);
+        ZG_OVERWRITE
+        IEXPNO
+        i++;
+    END
 
-  return 0;
+    return 0;
 }
