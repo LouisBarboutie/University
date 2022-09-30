@@ -1,16 +1,13 @@
 /* 
     Für Elise
-
     Description:
     This script creates a new dataset, which is a copy of an already existing dataset. 
     It copies all the parameter files but no raw or processed data.
     Experiments numbering does not have to be continuous.
     Processing number is assumed to be 1 for every experiment.
     Title file is written automatically with given parameters.
-
     Author: Louis-Hendrik Barboutie
     e-mail: louis.barboutie@gmail.com
-
     Changelog:
     - 21/09/2022    added title file creation
     - 20/09/2022	implemented directory reading, automatic date setting
@@ -181,7 +178,7 @@ int au_metabol_1(void){
             
             // print the title file, shitty way, maybe use list to set d1
             if (i == 6){
-                create_title(ref_file_path, new_file_path, exp_date, metabolite_name, metabolite_concentration, metabolite_volume, spinner_nbr, exp_int_list[j]);   
+                create_title(ref_file_path, new_file_path, exp_date, metabolite_name, metabolite_concentration, metabolite_volume, solvent, spinner_nbr, exp_int_list[j]);   
             }
             else{
         	    file_copy(ref_file_path, new_file_path);
@@ -240,7 +237,7 @@ void create_title(char *ref_file_path, char *new_file_path, char *exp_date, char
     if (exp == 100){
         fprintf(fptr_dest, "parameters set for shimming\n");
     }
-    fprintf(fptr_dest,"%s %s mM\nVolume %s uL\n%s, TSP 5 mM\ninsert HR-MAS\nspinner number %i\n277 K\nP1 4.50 us\nPLW 1 14.65 W\n", metabolite_name, metabolite_concentration, metabolite_volume, solvent, spinner_nbr);
+    fprintf(fptr_dest,"%s %s mM\nVolume %s uL\n%s, TSP 5 mM\ninsert HR-MAS\nspinner number %i\n277 K\nPLW 1 14.65 W\n", metabolite_name, metabolite_concentration, metabolite_volume, solvent, spinner_nbr);
             
 
     // close files

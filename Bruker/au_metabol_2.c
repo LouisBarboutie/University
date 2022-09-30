@@ -28,11 +28,13 @@ QUITMSG("--- AU program au_metabol_2 finished ---")
 int cmpfunc (const void * a, const void * b) {
    return ( *(int*)a - *(int*)b );
 }
+void assemble_path(char *path, char *prefix, char *suffix);
 
 int au_metabol_2(const char* curdat){
 	int i;
     float P1;
     int n_exp; // amount of experiments
+    int n_cpmg1pr; 
     int masr;
     int t_equi;
     float temp;
@@ -40,10 +42,12 @@ int au_metabol_2(const char* curdat){
     float SR; // shift reference value 
     char default_dir[PATH_MAX];
     char peaklist_path[PATH_MAX]; 
+    char title_path[PATH_MAX];
     char dataset_name[PATH_MAX];
     char default_path[PATH_MAX];
     char dataset_path[PATH_MAX];
-    char ans[32];
+    char ans[2][32];
+    char exp_name[32];
     char line[PATH_MAX]; // string for reading the files
     int exp_name_list[64]; // modify the value in the brackets to have more possible experiments
     float F1P, F2P, MI; // limits and minimum intensity for the peak picking
@@ -56,13 +60,13 @@ int au_metabol_2(const char* curdat){
     strcpy(dataset_name, "dataset_name");
     GETSTRING("enter name of dataset (right click -> rename -> copy):", dataset_name)
     
-    strcpy(ans, "y");
-    GETSTRING("halt the rotation at the end? [y/n]", ans)
+    strcpy(ans[0], "y");
+    GETSTRING("halt the rotation at the end? [y/n]", ans[0])
     
     // temperature and masr input
     masr = 3501;
     temp = 277;
-    t_equi = 10;
+    t_equi = 0;
     GETINT("enter masr frequency (Hz):", masr)
     GETFLOAT("enter desired temperature (K):", temp)
     GETINT("wait how long after temperature equilibration (s):", t_equi)
@@ -76,12 +80,10 @@ int au_metabol_2(const char* curdat){
     TEREADY(t_equi,0.1) // start the temperature change and wait t_equi after stabilization
 
     // build the path to the peaklist file
-    strcpy(default_path, "/opt/topspin3.6.3.b.11/data/jesus/nmr/");
-    strcpy(dataset_path, default_path); // build path to dataset
-    strcat(dataset_path, dataset_name);
-    strcpy(peaklist_path, dataset_path); // build path to peaklist
-    strcat(peaklist_path, "/1/pdata/1/peaklist"); // path should now look like this: "dataset_path/1/pdata/1/peaklist"
-	
+    strcpy(default_path, "/opt/nmrdata/users/jesus/ux_data/nmr");
+    assemble_path(dataset_path, default_path, dataset_name); // build path to dataset
+    assemble_path(peaklist_path, dataset_path, "1/pdata/1/peaklist"); // build path to peaklist
+     
     n_exp = 0;
     dataset_folder = opendir(dataset_path);
 
@@ -110,6 +112,14 @@ int au_metabol_2(const char* curdat){
     // do a sort of exp_name_list here. use qsort
     qsort(exp_name_list, n_exp, sizeof(int), cmpfunc);
     
+    // count how many cpmg experiments will be done
+    n_cpmg1pr = 0;
+    for ( i = 0; i < n_exp; i++){
+        if ( exp_name_list[i] > 9 && exp_name_list < 100){
+            n_cpmg1pr++;
+        }
+    }
+
     // perform automatic wobb
     XCMD("atma")
 
@@ -118,6 +128,7 @@ int au_metabol_2(const char* curdat){
     ZG
     FT
     APK
+    VIEWDATA_SAMEWIN
 
     // peak picking parameters, user input
     F1P = 6; // default values
@@ -167,7 +178,7 @@ int au_metabol_2(const char* curdat){
     P1 /= 2;
 
     // set the parameter in all the experiments
-    i =0;
+    i = 0;
     TIMES(n_exp) 
     	REXPNO(exp_name_list[i])
     	SETCURDATA
@@ -175,25 +186,63 @@ int au_metabol_2(const char* curdat){
     	i++;
     END
 
+    // append P1 value to title file
+    for (i = 0; i < n_exp; i++){
+        // get path to title file
+        sprintf(exp_name, "%i", exp_name_list[i]); // need the name as str and not int
+	    assemble_path(title_path, dataset_path, exp_name); 
+        assemble_path(title_path, title_path, "pdata/1/title");
+
+        // open title file in append mode and print P1
+        fptr = fopen(title_path, "a");
+        if ( fptr == NULL){
+            Proc_err(DEF_ERR_OPT, "error opening file %s", title_path);
+        }
+        fprintf(fptr, "P1 = %f us\n", P1);
+        fclose(fptr);
+    }
+
     // go into the first and second experiment and do a simple acquisition sequence
     for ( i=0; i<2; i++){
         REXPNO(i+1)
         ZG
         FT
         APK
+        VIEWDATA_SAMEWIN
     }
 
+    // go to exp 100 for shimming and launch gs
     REXPNO(100)
     ZG
     FT
     APK
+    VIEWDATA_SAMEWIN
     CPR_exec("gs", WAIT_START);
     sleep(30); // give 30s to select the peak for the shims
-    CPR_exec("topshim changemasshims", WAIT_TERM); // doesn"t work in parallel with gs
+    CPR_exec("topshim changemasshims", WAIT_TERM); 
 
-    if (strcmp(ans,"y") == 0){
+    GETSTRING("start exp 10 to 13: [y/n]", ans[1])
+    if ( strcmp(ans[1], "y") == 0){
+        for( i=10; i < 10+n_cpmg1pr; i++){
+            REXPNO(i)
+            ZG
+            FT
+            APK
+        }
+    }
+
+    if (strcmp(ans[0],"y") == 0){
         MASH // halt the rotation
     }
 
+    XCMD("halt")
+    
     return EXIT_SUCCESS;
+}
+
+void assemble_path(char *path, char *prefix, char *suffix){
+    strcpy(path, prefix);
+    strcat(path, "/");
+    strcat(path, suffix);
+    return;
 }
