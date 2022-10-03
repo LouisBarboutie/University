@@ -6,6 +6,7 @@
     Experiments numbering does not have to be continuous.
     Processing number is assumed to be 1 for every experiment.
     Title file is written automatically with given parameters.
+
     Author: Louis-Hendrik Barboutie
     e-mail: louis.barboutie@gmail.com
     Changelog:
@@ -13,8 +14,13 @@
     - 20/09/2022	implemented directory reading, automatic date setting
     - 19/09/2022    created
 */
-AUERR = au_metabol_1();
-QUITMSG("--- AU program au_metabol_1 finished ---")
+
+AUERR = mbcpy();
+QUITMSG("--- AU program mbcpy finished ---")
+
+/* ===================== */
+/* ===== Libraries ===== */
+/* ===================== */
 
 #include <stdio.h>
 #include <string.h>
@@ -24,14 +30,27 @@ QUITMSG("--- AU program au_metabol_1 finished ---")
 #include <stdlib.h>
 #include <math.h>
 
+/* ===================== */
+/* ===== Functions ===== */
+/* ===================== */
+
 void assemble_path(char *path, char *prefix, char *suffix);
 void file_copy(char *ref_file_path, char *new_file_path);
 void create_title(char *ref_file_path, char *new_file_path, char *exp_date, char *metabolite_name, char *metabolite_concentration, char *metabolite_volume, char *solvent, int spinner_nbr, int exp);
 
-int au_metabol_1(void){
-    int i, j, n_exp, spinner_nbr, d1;
-    char exp_name_list[64][8];
-    char exp_int_list[64];
+/* =================== */
+/* ===== Program ===== */
+/* =================== */
+
+int mbcpy(void){
+
+    /* --------------------- */
+    /* ----- Variables ----- */
+    /* --------------------- */
+
+    int i, j, n_exp, spinner_nbr; // various couners
+    char exp_name_list[64][8]; // experiment name list as string
+    char exp_int_list[64]; // experiment name list as integer
     char *file_names[7] = { "acqu", "acqus", "popt.array", "outd", "proc", "procs", "title"}; // list of the names of files to copy
     char new_dir_path_default[PATH_MAX]; // path to the default directory containing all datasets
     char ref_dataset_name[PATH_MAX]; // name of the reference dataset
@@ -44,19 +63,23 @@ int au_metabol_1(void){
     char ref_file_path[PATH_MAX]; // path to the reference file
     char new_file_path[PATH_MAX]; // path to the new file
     char temp_ch; // one character as copy buffer
-    char exp_date[PATH_MAX];
-    char exp_date_title[PATH_MAX];
+    char exp_date[PATH_MAX]; // experiment date for the title file
+    char exp_date_title[PATH_MAX]; // experiment date for the title
     char metabolite_name[PATH_MAX];
     char metabolite_concentration[PATH_MAX];
     char metabolite_volume[PATH_MAX];
     char solvent[PATH_MAX];
-    char *ptr;
+    char *ptr; // pointer for strtol(), not used elsewhere
     FILE *fptr_ref; // pointer to open the reference files
     FILE *fptr_dest; // pointer to open the destination files 
     DIR *ref_dataset_folder; // pointer to the reference dataset folder
-    struct dirent *entry; 
-    time_t T = time(NULL);
+    struct dirent *entry;  // variable used for reading directories
+    time_t T = time(NULL); 
     struct tm dt = *localtime(&T);
+
+    /* ------------------------ */
+    /* ----- Get the date ----- */
+    /* ------------------------ */
 
     // get the current date for printing in title file and dataset name
     getdate(&dt);
@@ -65,6 +88,10 @@ int au_metabol_1(void){
     	
     // define default directory path
     strcpy(new_dir_path_default, "/opt/nmrdata/users/jesus/ux_data/nmr");
+
+    /* ------------------------------------------ */
+    /* ----- User prompts and path assembly ----- */
+    /* ------------------------------------------ */
 
     // ask user for name parameters of new dataset
     strcpy(metabolite_name, "metabolite_name");
@@ -83,28 +110,33 @@ int au_metabol_1(void){
     strcat(new_dataset_name, "_");
     strcat(new_dataset_name, metabolite_concentration);
     strcat(new_dataset_name, "mM_");
-    strcat(new_dataset_name,metabolite_volume),
+    strcat(new_dataset_name, metabolite_volume);
     strcat(new_dataset_name, "uL_");
     strcat(new_dataset_name, solvent);
     strcat(new_dataset_name, "_");
     strcat(new_dataset_name, exp_date_title);
 
     // ask for a reference dataset to copy
-    strcpy(ref_dataset_name, "MDB_REFERENCE_XXXmM_21092022");
+    strcpy(ref_dataset_name, "MDB_REFERENCE_XXXmM_21092022"); // default reference dataset
     GETSTRING("enter name of experiment to copy (must be for same user):", ref_dataset_name)
 
-    // store the path to the reference dataset
+    // build and store the path to the new and reference datasets
     assemble_path(ref_dataset_path, new_dir_path_default, ref_dataset_name);
     assemble_path(new_dataset_path, new_dir_path_default, new_dataset_name);
 
-    // create new dataset 
+    // create new dataset with read and write access
     if (mkdir(new_dataset_path, 0777) == -1){
         Proc_err(DEF_ERR_OPT, "failed to create new dataset");
     }
 
-    // check the amount and names of experiments to create
-    n_exp = 0;
-    ref_dataset_folder = opendir(ref_dataset_path);
+    /* ------------------------------------------------------------------------------------ */
+    /* ----- Read the dataset directory for counting and getting names of experiments ----- */
+    /* ------------------------------------------------------------------------------------ */
+
+    n_exp = 0; // initialize counter
+
+    // open the directory for reading
+    ref_dataset_folder = opendir(ref_dataset_path); 
 
     // failsafe
     if (ref_dataset_folder == NULL){
@@ -113,28 +145,34 @@ int au_metabol_1(void){
     }
 
     // store the experiment names in a list
-    while (entry = readdir(ref_dataset_folder)){
-        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0){
+    while (entry = readdir(ref_dataset_folder)){ // read and store each entry 
+        if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0){ // do not store the names for current and parent directory
             continue;
         }
         else {
-            strcpy(exp_name_list[n_exp], entry->d_name);
-            exp_int_list[n_exp] = strtol(entry->d_name,&ptr, 10);
-            n_exp++;
+            strcpy(exp_name_list[n_exp], entry->d_name); // store the names of the experiments 
+            exp_int_list[n_exp] = strtol(entry->d_name,&ptr, 10); // convert name to integer
+            n_exp++; // update counter
         }
     }
+
+    // close the dataset
     closedir(ref_dataset_folder);	
 
     // check for the correct value of n_exp
-    Proc_err(DEF_ERR_OPT, "THIS IS NOT AN ERROR: n_exp = %i, should be 7", n_exp);
+    // Proc_err(DEF_ERR_OPT, "THIS IS NOT AN ERROR: n_exp = %i, should be 7", n_exp);
     
-    for (j = 0; j < n_exp; j++)
+    /* -------------------------------- */
+    /* ----- Copy Loop go Brrrrrr ----- */
+    /* -------------------------------- */
+
+    for (j = 0; j < n_exp; j++) // iterate over all experiments
     { 
-        // store path to experiment and sync with the reference
+        // build and store path to experiment and sync with the reference
         assemble_path(new_dataset_exp_path, new_dataset_path, exp_name_list[j]);
         assemble_path(ref_dataset_exp_path, ref_dataset_path, exp_name_list[j]);
         
-        // create first experiment
+        // create experiment folder
         if (mkdir(new_dataset_exp_path, 0777) == -1){
             Proc_err(DEF_ERR_OPT, "failed to create new experiment, nbr %i, inside dataset", ref_dataset_exp_path);
         }
@@ -147,7 +185,7 @@ int au_metabol_1(void){
 
             // copy file by file, but popt.array only for experiment 1
             if ( i == 2 && strcmp(exp_name_list[j], "1") == 1){
-                continue;
+                continue; // skip popt.array if experiment is not 1
             }
             else{
                 file_copy(ref_file_path, new_file_path);
@@ -190,6 +228,10 @@ int au_metabol_1(void){
     return EXIT_SUCCESS;
 }
 
+/* ============================================================================= */
+/* Functions                                                                     */
+/* ============================================================================= */
+
 void file_copy(char *ref_file_path, char *new_file_path){
     FILE *fptr_ref, *fptr_dest;
     char temp_ch;
@@ -198,6 +240,7 @@ void file_copy(char *ref_file_path, char *new_file_path){
     fptr_ref = fopen(ref_file_path, "r");
     fptr_dest = fopen(new_file_path, "w");
 
+    // failsafe
     if (fptr_ref == NULL || fptr_dest == NULL){
         Proc_err(DEF_ERR_OPT, "error opening file %s or %s", ref_file_path, new_file_path);
     }
@@ -237,7 +280,7 @@ void create_title(char *ref_file_path, char *new_file_path, char *exp_date, char
     if (exp == 100){
         fprintf(fptr_dest, "parameters set for shimming\n");
     }
-    fprintf(fptr_dest,"%s %s mM\nVolume %s uL\n%s, TSP 5 mM\ninsert HR-MAS\nspinner number %i\n277 K\nPLW 1 14.65 W\n", metabolite_name, metabolite_concentration, metabolite_volume, solvent, spinner_nbr);
+    fprintf(fptr_dest,"%s %s mM\nVolume %s uL\n%s\nTSP 5 mM\ninsert HR-MAS\nspinner number %i\n277 K\nPLW 1 14.65 W\n", metabolite_name, metabolite_concentration, metabolite_volume, solvent, spinner_nbr);
             
 
     // close files

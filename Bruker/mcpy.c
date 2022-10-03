@@ -8,6 +8,10 @@
 AUERR = mcpy();
 QUITMSG("--- AU program mcpy finished ---")
 
+/* ============================================================================= */
+/* Libraries                                                                     */
+/* ============================================================================= */
+
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -16,10 +20,21 @@ QUITMSG("--- AU program mcpy finished ---")
 #include <stdlib.h>
 #include <math.h>
 
+/* ============================================================================= */
+/* Function declaration                                                          */
+/* ============================================================================= */
+
 void assemble_path(char *path, char *prefix, char *suffix);
 void file_copy(char *ref_file_path, char *new_file_path);
 
+/* ============================================================================= */
+/* Main program                                                                  */
+/* ============================================================================= */
+
 int mcpy(void){
+    /* --------------------- */
+    /* ----- Variables ----- */
+    /* --------------------- */
 
     char file_names[6][6] = { "acqu", "acqus", "outd", "proc", "procs", "title"}; // list of the names of files to copy
     char new_dir_path_default[PATH_MAX];
@@ -49,8 +64,10 @@ int mcpy(void){
 
     // define default directory path
     strcpy(new_dir_path_default, "/opt/nmrdata/users/jesus/ux_data/nmr");
-
-
+   
+    /* ------------------------ */
+    /* ----- User prompts ----- */
+    /* ------------------------ */
 
     // get name of new dataset
     strcpy(new_dataset_name, "new_dataset_name");
@@ -71,6 +88,10 @@ int mcpy(void){
         Proc_err(DEF_ERR_OPT, "failed to create new dataset");
         return EXIT_FAILURE;
     }
+    
+    /* ------------------------------------------------------------------------------------ */
+    /* ----- Read the dataset directory for counting and getting names of experiments ----- */
+    /* ------------------------------------------------------------------------------------ */
 
     // check the amount and names of experiments to create
     ref_dataset_folder = opendir(ref_dataset_path);
@@ -94,6 +115,10 @@ int mcpy(void){
     }
 
     closedir(ref_dataset_folder);
+    
+    /* -------------------------------- */
+    /* ----- Copy Loop go Brrrrrr ----- */
+    /* -------------------------------- */
 
     for (i = 0; i < n_exp; i++)
     { 
@@ -145,6 +170,10 @@ int mcpy(void){
     
     return EXIT_SUCCESS;
 }
+
+/* ============================================================================= */
+/* Functions                                                                     */
+/* ============================================================================= */
 
 void file_copy(char *ref_file_path, char *new_file_path){
     FILE *fptr_ref, *fptr_dest;
