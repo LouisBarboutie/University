@@ -71,3 +71,6 @@ end
 disp('The values for R are:')
 disp(Rvals(1:counter))
 
+% TODO 
+% export to .txt file maybe
+% scan a folder for all experiments to fit
