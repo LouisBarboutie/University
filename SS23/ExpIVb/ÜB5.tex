@@ -1,0 +1,244 @@
+\documentclass[12pt]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage[version=4]{mhchem}
+\usepackage{siunitx}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\setlength{\headheight}{16pt}
+\fancyhead[L]{Übungsblatt 5}
+\fancyhead[R]{Louis-Hendrik Barboutie}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Aufgabe 12}
+
+\subsection{a)}
+
+Die Gleichung für den $\alpha$-Zerfall von \ce{^{238}_{94}Pu} ist
+\begin{equation*}
+    \ce{^{238}_{94} Pu} \rightarrow \ce{^{234}_{92} U} + \ce{^4_2 He}
+\end{equation*}
+
+Die Massenbilanz für den Zerfall ist dann
+\begin{equation*}
+    \Delta m = m_{\text{Pu}-238} - m_{\text{U}-234} - m_{\text{He}}
+\end{equation*} 
+
+Diese entspricht einer Energieänderung
+\begin{equation*}
+    \Delta E = c^2 \Delta m
+\end{equation*}
+
+Rechnet man diese aus erhält man
+\begin{equation*}
+    \begin{cases}
+        \Delta m \approx 9,97 \cdot 10^{-30} \ \si{kg} \\
+        \Delta E \approx 5,59 \ \si{MeV}
+    \end{cases}  
+\end{equation*}
+
+\subsection{b)}
+
+Nimmt man an, dass die beim $\alpha$-Zerfall freigesetzte Energie komplett in kinetische Energie umgewandelt wird, kann man über Impuls- und Energieerhaltung die kinetische Energie $E_\alpha$ und Geschwindigkeit $|\vec{v}_\alpha|$ des $\alpha$-Teilchens bestimmen.
+Man hat:
+\begin{align*}
+    &\begin{cases}
+    p_{U-234} + p_{\alpha} = 0 \\
+    \Delta E = E_{U-234} + E_\alpha
+    \end{cases} \\
+    \Leftrightarrow &\begin{cases}
+    p_{U-234} = - p_{\alpha} \\
+    \Delta E = \frac{p_{U-234}^2}{2m_{U-234}} + E_\alpha
+    \end{cases} \\
+    \Leftrightarrow &\begin{cases}
+    p_{U-234} = - p_{\alpha} \\
+    \Delta E = \frac{p_{\alpha}^2}{2m_{U-234}} + E_\alpha
+    \end{cases} \\
+    \Leftrightarrow &\begin{cases}
+    p_{U-234} = - p_{\alpha} \\
+    \Delta E = \frac{m_{\alpha}}{m_{U-234}} E_\alpha + E_\alpha
+    \end{cases} \\ 
+    \Leftrightarrow &\begin{cases}
+    p_{U-234} = - p_{\alpha} \\
+    \Delta E = \left(\frac{m_{\alpha}}{m_{U-234}} + 1 \right) E_\alpha
+    \end{cases} \\
+    \Leftrightarrow &\begin{cases}
+    p_{U-234} = - p_{\alpha} \\
+    E_\alpha = \frac{m_{U-234}}{m_{U-234} + m_\alpha} \Delta E
+    \end{cases} 
+\end{align*}
+
+An die Geschwindigkeit kommt man über
+\begin{align*}
+    \frac{1}{2} m_\alpha &|\vec{v}_\alpha|^2 = E_\alpha \\
+    \Rightarrow &|\vec{v}_\alpha| = \sqrt{\frac{2}{m_\alpha} E_\alpha} \\
+    \Leftrightarrow &|\vec{v}_\alpha| = \sqrt{\frac{2 m_{U-234} \Delta E}{m_\alpha (m_{U-234} + m_\alpha)}}
+\end{align*}
+
+Die kinetische Energie des Kerns kann man wie beim $\alpha$-Teilchen berechnen, wenn man für die Energie von Uranium auflöst. Dann hat man:
+\begin{equation*}
+    E_{U-234} = \frac{m_{\alpha}}{m_{U-234} + m_\alpha} \Delta E
+\end{equation*}
+
+Die Masse des $\alpha$-Teilchens ist $m_\alpha \approx m_{\ce{He}} - 2m_{e^-}$ (Der Fehler liegt in der Größenordnung von $10^{-6} \ \si{u}$). Es ergibt sich dann:
+\begin{equation*}
+    \begin{cases}
+    E_\alpha \approx 5,50 \ \text{MeV} \\
+    |\vec{v}_\alpha| \approx 1,63 \cdot 10^7 \ \text{m} \cdot \text{s}^{-1} \\
+    E_{U-234} \approx 94,0 \ \text{keV}
+\end{cases}
+\end{equation*}
+
+
+Da die berechnete Geschwindigkeit nur ca. $5,43 \cdot 10^{-2} \ c \ll c$ beträgt, kann man klassisch rechnen und braucht nicht relativistische Effekte zu betrachten. 
+
+\subsection{c)}
+
+Die Gesamtmasse von \ce{PuO2} an Bord der Cassini-Sonde beträgt (am Start bei $t=0$) $m_{\ce{PuO2},tot} = 36,7 \ \si{kg}$. Wenn $M_{\ce{PuO2}} = 276 \ \si{g} \cdot \si{mol}^{-1}$ die molare Masse von Plutoniumoxid ist, dann entspricht die Gesamtmasse einer Anzahl von Molekülen von
+\begin{equation*}
+    N_{\ce{PuO2}}(0) = \mathcal{N}_A \frac{m_{\ce{PuO2},tot}}{M_{\ce{PuO2}}}
+\end{equation*}
+
+Wobei $\mathcal{N}_A = 6,02214076 \cdot 10^{23} $ die Avogadrokonstante ist. Da in jedem Molekül auch nur ein Plutoniumatom enthalten ist, ist die Anzahl der Plutoniumatome gleich der Anzahl an Molekülen. Somit ist
+\begin{equation*}
+    N_{\ce{Pu}}(0) = \mathcal{N}_A \frac{m_{\ce{PuO2},tot}}{M_{\ce{PuO2}}}
+\end{equation*}
+
+Die Aktivität ist gegeben durch $A_{\ce{Pu}}(t) = \lambda_{\ce{Pu}} N_{\ce{Pu}} (t)$, wobei Plutonium nach einem einfachen Zerfallsgesetzt zerfällt. Die Aktivität ist dann
+\begin{equation*}
+    A_{\ce{Pu}}(t) = \lambda_{\ce{Pu}} N_{\ce{Pu}}(0) e^{\lambda_{\ce{Pu}}t}
+\end{equation*}
+
+Am Start beträgt die Aktivität somit $A_{\ce{Pu}} \approx 2,01 \cdot 10^{16} \ \si{Bq}$; 2451 Tage nach dem Start erreicht Cassini den Saturn (Start ist am 15/10/1997 und orbitale Injektion am 01/07/2004). Die Aktivität ist an dem Zeitpunkt dann $A_{\ce{Pu}} \approx 1,90 \cdot 10^{16} \ \si{Bq}$, was einer Reduktion von ca. $5 \ \%$ entspricht.
+
+\subsection{d)}
+
+Die Leistung ist wie im vorherigen Übungsblatt 
+\begin{equation*}
+    P(t) = c^2 \Delta m \lambda_{\ce{Pu}} N_{\ce{Pu}}(t) = c^2 \Delta m A_{\ce{Pu}}(t)
+\end{equation*}
+
+Am Start hat man somit eine Strahlungsleistung von $P \approx 1,80 \cdot 10^4 \ \si{W}$, und bei der Ankunft beim Saturn eine Strahlungsleistung von $P \approx 1,70 \cdot 10^4 \ \si{W}$
+Diese wird allerdings nur mit $7 \ \%$ Effizienz in Strom umgewandelt und die elektrische Leistung ist somit am Start nur $P_{el} \approx 1,26 \cdot 10^3 \ \si{W}$ und bei der Ankunft nur $P_{el} \approx 1,19 \cdot 10^3 \ \si{W}$.
+
+\subsection{e)}
+
+Die Solarkonstante hat in Erdentfernung ($r_E = 1.5 \cdot 10^{11} \ \si{m}$) den Wert
+$$I(r_E) = 1361,5 \ \si{W} \cdot \si{m}^{-2}$$
+
+Ist $\mathcal{A}(r) = 4 \pi r^2$ die Fläche der Sphäre mit Radius $r$, dann ist die Gesamtleistung der Sonne
+\begin{equation*}
+    P = I(r) \mathcal{A}(r) \Leftrightarrow I(r) = \frac{P}{\mathcal{A}(r)} = \frac{I(r_E) \mathcal{A}(r_E)}{\mathcal{A}(r)} = I(r_E) \left( \frac{r_E}{r} \right)^2
+\end{equation*}
+
+Der Saturn hat einen leicht exzentrischen Orbit, mit mittlerem Radius $r_S \approx 1,434 \cdot 10^{12} \ \si{m}$. Beim Saturn ist somit der Wert der Solarkonstante bei $I(r_S) \approx 14,9 \ \si{W} \cdot \si{m}^{-2}$
+
+\subsection{f)}
+
+Die Leistung von Solarpanelen mit Effizienz $\varepsilon = 0,25$ ist $P = \varepsilon I(r) A$, wobei $A$ die Fläche der Solarzellen ist. Will man die elektrische Leistung der Radioisotopengeneratoren erreichen bräuchte man eine Fläche von
+\begin{equation*}
+    A = \frac{P_{el}(r_S)}{\varepsilon I(r_S)} \approx 321 \ \text{m}^2
+\end{equation*}
+
+\subsection{g)}
+
+An die Aktivität kommt man wie vorher durch $A(t) = \lambda N(0) e^{-\lambda t}$. An die Anzahl an Atomen kommt man durch die Überlegung, dass in einer Kugel mit Durchmesser $d = 3 \ \si{cm}$
+\begin{equation*}
+    N(0) = \mathcal{N}_A \frac{m_{\text{pellet}}}{M_{\text{PuO2}}} = \mathcal{N}_A \frac{\rho_{\ce{PuO2}} V_{\text{pellet}}}{M_{\ce{PuO2}}} = \mathcal{N}_A \frac{\rho_{\ce{PuO2}} \pi d^3}{6 M_{\ce{PuO2}}}\approx 3,55 \cdot  10^{23}
+\end{equation*}
+
+Plutoniumatome sind. Das führt zu einer Aktivität von
+\begin{equation*}
+    A_{\text{pellet}}(0) \approx 8,88 \cdot 10^{13} \ \si{Bq}
+\end{equation*}
+
+\subsection{h)}
+
+Die Leistung ist wieder $P_{\text{pellet}} = c^2 \Delta m A_{\text{pellet}} \approx 79,6 \ \si{W}$
+
+\subsection{i)}
+
+Das Stefan-Boltzman-Gesetz lautet 
+\begin{equation*}
+    P = \sigma A (T_{\text{Körper}}^4 - T_{\text{Umwelt}}^4) \Rightarrow T_{\text{Körper}} = \left( \frac{P}{\sigma A} + T_{\text{Umwelt}}^4 \right)^\frac{1}{4}
+\end{equation*}
+
+Wodurch man die Temperatur des Pellets erhält, wenn die Umgebung bei Raumtemperatur ist:
+$$T_{\text{pellet}} \approx 843 \ \si{K} = 569 \ \si{\celsius}$$
+
+\section{Aufgabe 13}
+
+\subsection{a)}
+
+Die effektive Zerfallsgleichung von Thorium zu blei lautet:
+\begin{equation*}
+    \ce{^{232}_{90} Th} \rightarrow \ce{^{208}_{82} Pb} + 6 \ce{^4_2He} + 4\overline{\nu}_e
+\end{equation*}
+
+\subsection{b)}
+
+Wenn die Probe die zwei anderen Bleiisotope nicht beinhält, dann ist es sehr wahrscheinlich, dass das Blei nur durch radioaktiven Zerfall entstanden ist, und nicht ursprünglich vorhanden war. Das erlaubt uns dann die radiometrische Datierungsmethode anzuwenden, sonst müsste man Vorwissen über die Ursprüngliche Menge an Blei haben, was natürlich nicht geht.
+
+\subsection{c)}
+
+Die Halbwertszeit von Thorium ist wesentlich größer als die aller Tochterisotope, und man kann näherungsweise behaupten, dass Thorium instantan zu Blei zerfällt. Die Zunahme an Bleiatomen entspricht dann genau dem Verlust an Thoriumatomen, der gegeben wird von $N_{\ce{Th}}(0) - N_{\ce{Th}}(t)$. Das ergibt also
+\begin{equation*}
+    N_{\ce{Pb}} (t) = N_{\ce{Pb}}(0) + N_{\ce{Th}}(0) - N_{\ce{Th}}(t) = N_{\ce{Th}}(0) \left(1 - e^{-\lambda_{\ce{Th}} t} \right)
+\end{equation*}
+
+Allerdings gehen wir davon aus, dass kein Blei ursprünglich vorhanden war, also ist $N_{\ce{Pb}}(0) = 0$. Ebenfalls kann man über die Anzahl an Bleiatomen und verbliebenen Thoriumatomen auf die ursprüngliche Menge Thorium schließen: $N_{\ce{Th}}(0) = N_{\ce{Th}}(t) + N_{\ce{Pb}}(t)$. Das ist aber nur wahr, wenn keine Atome aus dem Gestein entkommen können. Man hat also
+\begin{equation*}
+    N_{\ce{Pb}}(t) = (N_{\ce{Pb}}(t) + N_{\ce{Th}}(t)) \left(1 - e^{-\lambda_{\ce{Th}} t} \right)
+\end{equation*}
+
+Man kann diese Gleichung dann nach $t$ umformen, um das Alter des Gesteins zu ermitteln:
+\begin{align*}
+    &\frac{N_{\ce{Pb}}(t)}{N_{\ce{Pb}}(t)+N_{\ce{Th}}(t)} = 1 - e^{-\lambda_{\ce{Th}} t} \\
+    \Leftrightarrow& \ e^{-\lambda_{\ce{Th}} t} = 1 - \frac{N_{\ce{Pb}}(t)}{N_{\ce{Pb}}(t)+N_{\ce{Th}}(t)} \\
+    \Leftrightarrow& \ -\lambda_{\ce{Th}} t = \ln \left( \frac{N_{\ce{Th}}(t)}{N_{\ce{Pb}}(t)+N_{\ce{Th}}(t)} \right) \\
+    \Leftrightarrow& t = \frac{1}{\lambda_{\ce{Th}}} \ln \left( \frac{N_{\ce{Pb}}(t)+N_{\ce{Th}}(t)}{N_{\ce{Th}}(t)} \right)
+\end{align*}
+
+Das somit berechnete Alter der Probe ist dann $t \approx 4,14 \cdot 10^9 \ \text{Jahre}$
+
+\section{Aufgabe 14}
+
+\subsection{a)}
+
+U-235 und U-238 folgen beide einem einfachen Zerfallsgesetz. Das Verhältnis zwischen den beiden Menge lässt sich also ausdrücken als
+$$\frac{N_\text{U-235}(t)}{N_\text{U-238}(t)} = \frac{N_\text{U-235}(0) e^{-\lambda_\text{U-235}t}}{N_\text{U-238}(0)e^{-\lambda_\text{U-238}t}} = \frac{N_\text{U-235}(0)}{N_\text{U-238}(0)} e^{-(\lambda_\text{U-235} - \lambda_\text{U-238}) t}$$
+Diese Gleichung wollen wir nach der Zeit umstellen und haben ($\tau$ ist die Halbwertzeit)
+\begin{align*}
+    &e^{-(\lambda_\text{U-235} - \lambda_\text{U-238}) t} =\frac{N_\text{U-238}(0)}{N_\text{U-235}(0)} \frac{N_\text{U-235}(t)}{N_\text{U-238}(t)}\\
+    \Leftrightarrow \ & t = \frac{1}{\lambda_\text{U-238} - \lambda_\text{U-235}} \ln \left( \frac{N_\text{U-238}(0)}{N_\text{U-235}(0)} \frac{N_\text{U-235}(t)}{N_\text{U-238}(t)} \right) \\
+    \Leftrightarrow \ & t = \frac{\tau_\text{U-235}\tau_\text{U-238}}{\ln(2)(\tau_\text{U-235}- \tau_\text{U-238})}\ln \left( \frac{N_\text{U-238}(0)}{N_\text{U-235}(0)} \frac{N_\text{U-235}(t)}{N_\text{U-238}(t)} \right)
+\end{align*}
+
+Die Erde ist somit ca. $5,11 \cdot 10^9 \ \text{Jahre}$ alt.
+
+\subsection{b)}
+
+Wie in der Aufgabe 13 gehen wir davon aus dass Uranium näherungsweise direkt zu Blei zerfällt. Dann hat man
+\begin{equation*}
+    \begin{cases}
+        N_\text{Pb-206}(t) = N_\text{U-238}(0)(1-e^{-\lambda_\text{U-238} t}) \\
+        N_\text{Pb-207}(t) = N_\text{U-235}(0)(1-e^{-\lambda_\text{U-235} t})
+\end{cases}
+\end{equation*}
+
+
+Das liefert ein heutiges Isotopenverhältnis von
+\begin{equation*}
+    \frac{N_\text{Pb-207}(t)}{N_\text{Pb-206}(t)} = \frac{N_\text{U-235}(0)(1-e^{-\lambda_\text{U-235} t})}{N_\text{U-238}(0)(1-e^{-\lambda_\text{U-238} t})} \approx 0,907
+\end{equation*}
+
+\subsection{c)}
+
+$^{206} \ce{Pb}$ und $^{207} \ce{Pb}$ sind jeweils zu $24,1 \ \%$ und $22,1 \ \%$ auf der Erde präsent. Das echte Verhältnis liegt demnach bei $\frac{N_\text{Pb-207}(t)}{N_\text{Pb-206}(t)} = 0,917$. Wir haben also eine relative Differenz von ca. $1 \ \%$
+
+\end{document}
