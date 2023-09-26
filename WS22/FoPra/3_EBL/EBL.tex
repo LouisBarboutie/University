@@ -1,0 +1,183 @@
+\documentclass[12pt]{article} 
+\usepackage[utf8]{inputenc}
+\usepackage[margin=2.5cm]{geometry} % decrease the margin size
+
+\usepackage{hyperref} % to include weblinks
+
+\usepackage{graphicx} % handle images and figures
+\usepackage{placeins} % to control placement of figures
+\usepackage{subcaption}
+
+\usepackage{amsmath} % general package for writing math
+\usepackage{amsfonts} % math fonts for obscure symbols
+
+\usepackage[version=4]{mhchem} % chemistry notation
+
+\usepackage[nottoc]{tocbibind}
+\usepackage[backend=biber,dateabbrev=false]{biblatex} % package for handling references
+\addbibresource{references.bib}
+\usepackage{csquotes}
+
+\usepackage{fancyhdr}
+
+\setlength{\parindent}{0pt} % remove indentation at the beginning of pargraphs
+
+\begin{document}
+
+\pagestyle{fancy}
+\setlength{\headheight}{15pt}
+\fancyhead[L]{Electron Beam Lithography}
+\fancyhead[R]{Louis-Hendrik Barboutie, Rajon Bhuyan}
+
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+        \Huge
+        \textbf{Electron Beam Lithography}
+        
+        \vspace{0.5cm}
+        \LARGE
+        Physikalisches Praktikum für Fortgeschrittene I
+        
+        \vspace{1.5cm}
+        \textbf{Louis-Hendrik Barboutie and Rajon Bhuyan} \newline
+        \textbf{7016306 \& 7029677}
+        
+        \vspace{0.5cm}
+        \Large 
+        Supervisor: Sukhvinder Singh
+        
+        \vfill
+
+        \includegraphics[width=0.4\textwidth]{logo_uni.png}
+        
+        \Large
+        12$^{\underline{\text{th}}}$ January 2023
+    \end{center}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+\section{Answers to questions}
+
+\textbf{Q1. Explain the basic structure and function of an electron microscope! What limits the
+resolution of the electron microscope?}
+
+A: An electron microscope is a microscope that uses a beam of accelerated electrons as a source
+of illumination. When the electron beam interacts with the specimen, it loses energy by a
+variety of mechanisms. The lost energy is converted into alternative forms such as heat,
+emission of low energy secondary electrons and high-energy backscattered electrons, light
+emission (cathodoluminescence) or X-ray emissions, all of which provide signals carrying
+information about the properties of the specimen surface, such as its topography and
+composition.
+Resolution of the electron microscope can be limited by the objective lens system in electron
+microscopes (the aperture cannot be made very small that the current is undetectable), stability
+of electron beam and magnetic field, and quality of vacuum in the tube. In addition to that
+diffraction of e- beam and astigmatism also limits the resolution.
+
+\textbf{Q2. How are X-rays generated? In which wavelength range are X-rays?}
+
+A: X-Rays are generated when core electrons of an atom are removed through collision. X- rays
+can also be produced through Synchrotron radiation, where charged particles are subject to an
+acceleration perpendicular to their velocity.
+X-rays have a wavelength ranging from 10 picometers to 10 nanometers.
+
+\textbf{Q3. Which different operating modes of an electron microscope work? Explain how they
+work and explain the differences?}
+
+A: Electron microscopes work in the following modes:
+Transmission electron microscope (TEM)
+A high energy beam of electrons is shone through a very thin sample, and the interactions
+between the electrons and the atoms can be used to observe features of the sample. The beam
+strikes the sample and parts of it are transmitted depending upon the thickness and electron
+transparency of the specimen. This transmitted beam is then focused into an image on
+fluorescent screen.
+Scanning electron microscope (SEM)
+Instead of travelling through the sample, the e- beam strikes the surface of the sample which is
+coated with a thin layer of Au or Pd. The electrons strike bound electrons of the coated layer
+which produces backscattered electrons and secondary electrons. When the secondary
+electrons reach and enter the detector, they strike a scintillator. This emits flashes of light is
+then used to create an image. The raised surfaces appear brighter on the screen while depressed
+surfaces appears darker.
+Electron beam lithography
+
+\textbf{Q4. Explain the advantages and disadvantages of the different types of lithography. What is
+the difference between raster and vector beam steering? What is meant by meander or
+line mode?}
+
+In raster beam steering, the beam is scanned over the sample line by line. Wherever the sample
+needs not be exposed, the beam is blanked using a slit diaphragm.
+In vector beam steering, the beam is scanned over the sample where exposure is required and
+blanking is kept minimal by finding the least travel distance through a software.
+
+Meander mode (MM mode): The electron beam meanders along each line to be exposed in
+alternating writing direction.
+Line mode (LM mode). The electron beam travels along only one direction. The beam is
+blanked while travelling back to the starting line.
+
+\textbf{Q5. What is meant by a positive or negative resist? What type of PMMA is used here?}
+
+A: When positive photoresist is exposed to radiation, the chemical structure changes and becomes
+more soluble in the photoresist developer. These exposed areas are then washed away with the
+photoresist developer solvent.
+With negative photoresist, instead of becoming more soluble, negative photoresists become
+extremely difficult to dissolve. As a result, negative resist remains on the surface while the
+photoresist developer solution works to remove the areas that are unexposed.
+PMMA used here is a positive resist consisting of long-chain monomers whose bonds are
+broken as a result of electron beam exposure.
+
+\textbf{Q6. Explain the main reaction when the PMMA layers are exposed to light?}
+
+A: In positive resists, PMMA polymer chains are broken into subsequent monomers.
+In negative resists, PMMA polymer chains are broken into monomers and then repolymerises
+through cross-linking.
+
+\textbf{Q7. Which secondary processes are triggered by the impact of the electron beam on the
+sample surface?}
+
+A: When electrons strike the sample surface, electrons are ejected from atoms which are called
+Auger electrons. Some electrons scatter back along the beam path and interactions with the
+substrate generate X-rays.
+Electron beam lithography
+
+\textbf{Q8. What is the Proximity Effect? Explain the effects during exposure of the sample.}
+
+A: The proximity effect in electron beam lithography (EBL) is the phenomenon that the exposure
+dose distribution, and hence the developed pattern, is wider than the scanned pattern due to the
+interactions of the primary beam electrons with the resist and substrate. These cause the resist
+outside the scanned pattern to receive a non-zero dose.
+During exposure forward scattering and backscattering takes
+place. The forward scattering process is due to electron-electron
+interactions which deflect the primary electrons, broadening the
+beam in the resist. The electrons do not stop in the resist but
+penetrate the substrate. And contribute to resist exposure by
+scattering back into the resist. This backscattering process
+originates from a collision with substrate nucleus and leads to
+wide-angle scattering of the light electron from a range of depths
+(micrometres) in the substrate.
+
+\textbf{Q9. Explain the difference between intra- and inter-proximity effects?}
+
+A: During exposure of a substrate to an electron beam, due to different lateral dimensions getting
+exposed to same dose of radiation, underexposure can take place. This is intra-proximity effect.
+Inter-proximity effect takes place when two adjacent structures are exposed and there is
+overexposure. This inter-proximity effect results in bulging of the respective edge areas
+towards the neighbouring structure.
+
+\textbf{Q10. Name different methods for determining the proximity parameters and explain them.}
+
+A: Underexposure (intra-proximity) can be determined with the smaller structures, where the
+scatter components are significantly lower.
+Inter-proximity can be determined be exposing two adjusting structures with decreasing
+spacing between them. The overexposure effect that sets in depending on the dose and the
+minimum distance is clearly visible.
+The structures are then analysed using light microscopy or SEM
+
+\section{Results}
+
+\section{Discussion}
+
+\printbibliography
+
+\end{document}

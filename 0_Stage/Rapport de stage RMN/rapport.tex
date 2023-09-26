@@ -27,7 +27,7 @@
         
         \vspace{0.5cm}
         \LARGE
-        Supervisor: RAYA Jesus
+        Supervisor: Jésus Raya
         
         Research team of Prof. Bechinger
         
@@ -53,6 +53,10 @@
 \section{Introduction}
 
 \subsection{The institute and research team}
+
+I conducted my internship at the Institut de Chimie de Strasbourg, within Prof. Bechingers research team which is focusing on biophysics of membranes and NMR. My supervisor was Jésus Raya, research engineer at the CNRS.
+
+Current research focuses on the structural study of proteins and peptides via solid and liquid NMR, on bacterial membranes and the interaction processes with lipids and peptides. Another area of focus is the study of metabolites and the establishment of a database for medical use. 
 
 \subsection{The HyCGreen Project}
 
@@ -96,7 +100,7 @@ Inside samples molecules interact and such interactions can be undesirable but t
 
 \subsection{NMR aquisition techniques: Pulse programs and acquisition sequences}
 
-Pulse programs play an important role in NMR: they can improve the signal to noise ratio and thus make better spectra. A very famous one is the Spin Echo sequence, also known as Hahn echo.
+Pulse programs play a central role in NMR: they can improve the signal to noise ratio and thus make better spectra. Here are briefly presented a few.
 
 \subsubsection{Hahn echo}
 
@@ -109,6 +113,7 @@ Sometimes, the signal we obtain from a nucleus isn't very strong, but there is a
 \subsubsection{Spin Exchange at Magic Angle (SEMA)}
 
 Proton-proton interactions are problematic if there are other heteronuclear interactions we want to observe, eg. proton-nitrogen or proton-carbon. Luckily, there is a way to "spin lock" the protons and stop this interaction from happening. This is achieved by setting an RF frequency on the proton channel, such that in the rotational frame of reference the effective field of the nuclei is oriented at the magic angle. The technique is called SEMA, and is used for static solid NMR. 
+A variation of this method is the polarization inversion SEMA, which increases the sensitivity.
 
 \section{Experimental results and discussion}
 
@@ -241,179 +246,14 @@ In both scripts, the first part is all about opening the file with the parameter
 
 With these scripts on hand, we can write down a list and let the computer make the acquisitions by itself, which is particularly handy when conducting lengthy experiments.
 
-\subsection{AU-MULTI-VT-MAS}
+Other programming work included scripts to automate the acquisition process for the study of metabolites. Limitations of Bruker's TopSpin software made it impossible to copy whole datasets, including the acquisition parameters. While the manual copying work is manageable for a few experiments, it rapidly becomes tedious and time consuming. 
 
-\begin{minted}[breaklines=true,breaksymbolleft=,breakindentnchars=2]{c}
-/*
-  Description:
-  This AU programm allows variable temperature and variable speed acquisitions.
-  The parameters for the aquisitions need to be passed in in a .txt file, stored in the vt list directory.
-  Example of a parameter list: temperature (K) [whitespace] rotation speed (Hz)
-    280 2000
-    275 10000
-    275 15000
-  If datasets do not yet exist, the current dataset and its parameters are copied. 
-  If the data sets already exist, then the experiments are executed as they are.
-  Temperature and rotation speed are set according to the values in the parameter list. You will be asked for the temperature equilibration time. The AU program will wait at as long as defined by this time for the temperature to settle.
+I wrote a program to solve this issue. First, a reference dataset is created; this dataset will be the default reference to copy. When first running the program, the user is first prompted to input information about the sample: name, volume, concentration, volume and spinner number. These will be used to create the title of the new dataset. The date is automatically read from the system. The actual copying process is not very flexible: it uses the fact, that each dataset has the same folder structure. The reference dataset is also not entirely copied, as there is a lot of processing and data files included, which need not to be copied. The reference dataset directory is read, to acquire the number and names of the experiments. Then the new dataset is constructed and the files are copied one by one. Additionally, the title file is created.
 
-  Author: Louis-Hendrik Barboutie
-  Email: louis.barboutie@gmail.com
+This program was later adapted to copy any dataset: the title needs to be written entirely, and the title file is not created, but copied from the reference.
 
-  Modifications:
-  - 12/09/2022  changed parameter list format
-  - 09/09/2022  created
-*/
+The next step for the study of metabolites is to calibrate the P90 pulse duration to maximize the signal intensity. Because the metabolites are in an aqueous solvent, the resulting spectrum shows a very big peak for water. This peak can be removed however by doing the so called presaturation: a long low power pulse is applied on the resonance frequency of the solvent, which results in a total dephasing of the spins and the peak disappears from the spectrum. But the frequency of the solvent needs to determined using a first spectrum without presaturation. With a program this can be automated: after doing the P90 calibration, the frequency of water is found by doing peak picking. The corresponding frequency is read and stored for later acquisitions.
 
-AUERR = au_multi_vt_mas(curdat);
-QUITMSG("--- AU program au_multi_vt_mas finished ---")
-
-#include <inc/exptUtil>
-
-int au_multi_vt_mas(const char* curdat){
-  int i;
-  int masr_list[128], t_spin, t_before, t_after, experiments_counter, t_equi;
-  float temp_list[128];
-  char parameter_list_name[PATH_MAX], line[PATH_MAX], parameter_list_path[PATH_MAX];
-  FILE *fptr_parameter;
-    
-  /* input of the temperature and masr lists */
-  (void) strcpy (parameter_list_name, "parameterList");
-  GETSTRING("enter name of parameter list:", parameter_list_name)
-  
-  /* get the file path */
-  if (getParfileDirForRead(parameter_list_name, VT_DIRS, parameter_list_path) < 0){
-    Proc_err(DEF_ERR_OPT, "VT list file %s: %s\n"
-		"Please use 'edlist vt' to check for valid files.",
-		parameter_list_name, parameter_list_path);
-    ABORT
-  }
-
-  /* open the files and check for null */
-  if ( (fptr_parameter = fopen (parameter_list_path,"r")) == NULL ){
-  	Proc_err(DEF_ERR_OPT, "Could not open VT list file\n%s\n"
-	  "Please use 'edlist vt' to check for valid files.",
-	  parameter_list_path);
-   	ABORT
-  }	
-  	
-  /* store temperature and rotation speed settings in a list */
-  experiments_counter = 0;
-  while (fgets (line, sizeof(line), fptr_parameter) != NULL){
-	if (sscanf(line, "%f %i", &temp_list[experiments_counter],
-	&masr_list[experiments_counter]) != 2){ break; }
-	experiments_counter ++;
-  }
-        		
-  fclose( fptr_parameter );
-    
-  GETINT("enter thermal equilibration time (sec):", t_equi)
-    
-  /* test aquisition sequence */
-  i = 0;
-  TIMES(experiments_counter)
-    SETCURDATA
-    STOREPAR("TE",temp_list[i]) // set the temperature parameter
-    STOREPAR("MASR",masr_list[i]) // set the rotation speed parameter
-    STOREPAR("L 31",masr_list[i]) // set the rotation speed parameter
-    TESET // set the target temperature
-    MASR // set the target rotation speed
-    MASG(5) //start the rotation
-    TEREADY(t_equi,0.1) // start the temperature change and wait t_equi after stabilization
-    ZG_OVERWRITE // do the acquisition
-    IEXPNO // increment the experiment
-    i++; 
-  END
-  MASH // halt the rotation
-	
-  return 0;
-}
-\end{minted}
-
-\subsection{AU-MULTI-VT-STATIC}
-
-\begin{minted}[breaklines=true,breaksymbolleft=,breakindentnchars=2]{c}
-/*
-  Description:
-  This AU program allows the aquisition of multiple spectra with varying temperature for a static sample, and improves it with a spinning sequence.
-  Experiments are created as necessary, but a list containing the temperatures one wants to run the experiment at needs to be written beforehand.
-  The sample is given some time (user decided) to equilibrate its temperature before spinning. The spinning is used to obtain a good tensor-shaped peak.
-  -------------------------------------------------------------------------
-  Author: Louis-Hendrik Barboutie
-  Email: louis.barboutie@gmail.com
-  -------------------------------------------------------------------------
-  Modifications:
-  - 12/09/2022  created
-*/
-
-AUERR = au_multi_vt_static(curdat);
-QUITMSG("---AU program au_multi_vt_static finished ---")
-
-int au_multi_vt_static(const char* curdat){
-  FILE *fptr_temperature_list;
-  float temperature_list[128];
-  int experiments_counter, v_spin, t_spin, i, t_equi;
-  char line[PATH_MAX], temperature_list_name[PATH_MAX], temperature_list_path[PATH_MAX];
-
-  /* input of the temperature list */
-  (void) strcpy (temperature_list_name, "temperatureList");
-  GETSTRING("enter name of temperature list:", temperature_list_name)
-		
-  /* get the file path */
-  if (getParfileDirForRead(temperature_list_name, VT_DIRS, temperature_list_path) < 0){
-    Proc_err(DEF_ERR_OPT, "VT list file %s: %s\n"
-	"Please use 'edlist vt' to check for valid files.",
-	temperature_list_name, temperature_list_path);
-    ABORT
-    }
-
-  /* open the files and check for null */
-  if ( (fptr_temperature_list = fopen (temperature_list_path,"r")) == NULL ){
-    Proc_err(DEF_ERR_OPT, "Could not open VT list file\n%s\n"
-	  "Please use 'edlist vt' to check for valid files.",
-	  temperature_list_path);
-    ABORT
-    }	
-  	
-  /* store temperature and rotation speed settings in a list */
-  experiments_counter = 0;
-  while (fgets (line, sizeof(line), fptr_temperature_list) != NULL){
-    if (sscanf(line, "%f", &temperature_list[experiments_counter]) != 1){
-      break; 
-      }
-    experiments_counter ++;
-    }
-		
-  fclose( fptr_temperature_list );
-
-  v_spin = 3000;
-  t_spin = 0;
-  t_equi = 10;
-  GETINT("enter spin rate (Hz) before aquisition:", v_spin)
-  GETINT("enter spin duration (sec):", t_spin)
-  GETINT("enter equilibration duration (sec):", t_equi)
-
-  STOREPAR("MASR", v_spin) // the spinning sequence uses the same speed each time
-  STOREPAR("L 31", v_spin) // both parameters need to be set
-  MASR // pass the masr parameter to the spinning unit
-
-  i = 0;
-  TIMES(experiments_counter)
-      SETCURDATA 
-      STOREPAR("TE", temperature_list[i]) // store the next temperature setting from the list in the parameters
-      TESET // set the temperature
-      TEREADY(t_equi,0.1) // wait until the temperature has stabilized to 0.1 K and then wait t_equi
-      MASG(5) // try 5 times to launch the rotation
-      sleep(t_spin); // while spinning, wait for t_spin
-      MASH // stop the rotation
-      sleep(60); // wait 60 sec 
-      ZG_OVERWRITE // acquisition
-      IEXPNO // experiment incrementation
-      i++; 
-  END
-
-  return 0;
-}
-\end{minted}
 \section{Observations}
 
 \subsection{Nitrogen and Helium refillings}
@@ -436,7 +276,13 @@ An issue when cleaning the spinner is the removal of caps. More often than not, 
 
 \subsection{Spectroscope settings}
 
+\subsubsection{Tuning and matching}
+
 The probe inside the spectroscope is a complex RLC circuit. Since the signal is measured with a coil, the circuits parameters needs to be tuned to maximize the signal. This is achieved by tuning and matching: the with the help of additional inductors and capacitors, the impedance and resonnance frequency can be modified to match the one of the sample. It is a manual process: with the help of a monitoring device, the two settings are adjusted by hand until the circuit is well tuned and matched. This however requires a good circuit to begin with: tuning and matching are only possible in for a certain range of frequencies, so sometimes the circuit itself needs to be modified by swapping some coils.
+
+\subsubsection{Shimming}
+
+When a sample gets introduced into the probe, the external magnetic field gets ever so slightly changed because of the inhomogeneities inside the sample, there are inhomogeneities in the external field. These can be reduced with shims, small additional coils which correct the external field. The field produced by these coils is usually set manually (for the lack of a good automation program), by trying to achieve a nice, symetric Lorentzian peak for a given reference compound in the sample. 
 
 \subsection{Probe repairs}
 
@@ -445,6 +291,14 @@ While the probes manufacturer can repair or modify faulty hardware, it is both n
 While working with Prof. Nevzorov $^{15}$NH$_4$Cl samples, there was an issue where the frequency couldn't be matched on the $^1$H and $^{15}$N channels (during the "wobble" process). In this case, it was also an experiment to find what to do in order to be able to tune it again. Using trial and error, we identified a certain coil which could be modified by introducing a small metallic piece inside the spires. This brought us closer to the desired frequency, but not quite. Adding another coil in series had a similar effect but was impractical and less effective. In the end we found the problem: it was a grounding issue. As soon as the circuit got grounded the frequency could be set. So the repairs consisted in connecting an already grounded screw to the acquisition circuit. We had to solder small connections and it then proceeded to work flawlessly. 
 The next step however was to replace the coil wrapped around the sample, as it had an overly large radius. The field created by the coil was not intense enough for our needs (we only reached about 30 kHz), and a new coil was need. Using a flat wire, we wrapped it around a screw with the desired smaller diameter, creating a coil. Additionally, we increased the number of spires for an even greater effect. With this coil the field strength reached 50 kHz. When testing it with the sample, we noticed it underwent acoustic ringing; this occurs when the frequency going through the surrounding coil is low enough, that the sample has enough time to move slightly under the influence of the electromotive force produced by the coil. Adding an envelope of teflon strap lowered the freedom of movement of the sample and made the acoustic ringing disappear.
 
+\section{Simplex Downhill}
+
+\[
+\Vec{x}_c = \frac{1}{n} \sum_{\substack{i = 0 \\ i \neq i_{fmax}}}^{n+1} \Vec{x}_i
+\]
+\[
+\Vec{x}_i = \Vec{x}_{i_{min}} + \sigma(\Vec{x}_i - \Vec{x}_{i_{min}})
+\]
 \section{Conclusion}
 
 \end{document}
