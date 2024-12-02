@@ -30,6 +30,9 @@ for i in range(5):
     values = range(START, STOP+1, STEP)
     el[:, i] = values[::-1]
     az  [i, :] = values
+
+print(el)
+print(az)
 el_series = np.rot90(el, -1).flatten()
 az_series = np.rot90(az, -1).flatten()
 
@@ -85,10 +88,11 @@ for i, spectrum in enumerate(series):
 
     avg_intensity = np.sum(filtered_intensities) / len(filtered_intensities)
     avg_intensities[i-cutoff] = avg_intensity
-
+    plt.plot(frequencies, intensities)
 # get a surface instead of a series of points
 avg_intensities = np.reshape(avg_intensities, az.shape)
-
+print(spectrum['freq0'])
+plt.show()
 
 
 # ============================ #
@@ -116,8 +120,30 @@ y_flat = y.ravel()
 # calculate the fit
 popt, pcov = curve_fit(model, (x_flat, y_flat), np.ravel(avg_intensities))
 fitted_intensities = np.reshape(model((x_flat, y_flat), *popt), az.shape)
-print('Optimized parameters:\n' + '\n'.join([f'{val:.2e}' for val in popt]))
 
+params = ['x0', 'y0', 'mag', 'a', 'b', 'bg'] 
+print('\nOptimized parameters:\n' + '\n'.join([f'{params[i]}:\t {val:.2e}' for i, val in enumerate(popt)]))
+
+sigma_x = np.sqrt(1 / (2 * popt[3]))
+sigma_y = np.sqrt(1 / (2 * popt[4]))
+FWHM_x = 2 * np.sqrt(2 * np.log(2)) * sigma_x
+FWHM_y = 2 * np.sqrt(2 * np.log(2)) * sigma_y
+
+c = 299792458
+frequency = 1421.5e6
+wavelength = c / frequency
+diameter = 3 # meter
+angular_resolution = np.degrees(1.22 * wavelength / diameter)
+print('\nTheoretical values:')
+print(f'Angular resolution: {angular_resolution}°')
+
+print('\nPhysical variables of interest:')
+print(f'sigma_x: {sigma_x:.2f}°')
+print(f'sigma_x: {sigma_y:.2f}°')
+print(f'FWHM_x:  {FWHM_x:.2f}°')
+print(f'FWHM_x:  {FWHM_y:.2f}°')
+
+# plot and save the gaussian fit
 fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
 ax.plot_surface(az, el, avg_intensities)
 ax.plot_surface(az, el, fitted_intensities)
@@ -125,10 +151,14 @@ ax.set_xlabel('Azimuth [°]')
 ax.set_ylabel('Elevation [°]')
 ax.set_zlabel('Intensity [a.u.]')
 fig.suptitle('Fitted Gaussian')
+fig.savefig('gaussian_fit.png', dpi=300)
 
+# plot and save the residuals
 fig, ax = plt.subplots()
 ax.contourf(az, el, avg_intensities-fitted_intensities)
 ax.set_xlabel('Azimuth [°]')
 ax.set_ylabel('Elevation [°]')
 fig.suptitle('Residuals')
+fig.savefig('residuals.png', dpi=300)
+
 plt.show()
